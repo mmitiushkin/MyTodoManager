@@ -3,7 +3,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt import views as jwt_views
 
-from todoapp.views import TodoViewSet, ProjectViewSet
+from todoapp.views import TodoViewSet, ProjectViewSet, TodoCreateView
 from userapp.views import UserViewSet, LogoutAndBlacklistRefreshTokenForUserView
 
 router = DefaultRouter()
@@ -18,5 +18,6 @@ urlpatterns = [
     path('api/user/', include('userapp.urls', namespace='userapp')),
     path('api/token/obtain/', jwt_views.TokenObtainPairView.as_view(), name='token_create'),
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/blacklist/', LogoutAndBlacklistRefreshTokenForUserView.as_view(), name='blacklist')
+    path('api/blacklist/', LogoutAndBlacklistRefreshTokenForUserView.as_view(), name='blacklist'),
+    path('api/todo-create/', TodoCreateView.as_view(), name="todo-create"),
 ]

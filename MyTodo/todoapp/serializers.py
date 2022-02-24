@@ -8,7 +8,16 @@ class TodoSerializer(ModelSerializer):
         fields = '__all__'
 
 
+class TodoCreateSerializer(ModelSerializer):
+    class Meta:
+        model = Todo
+        fields = '__all__'
+
+
 class ProjectSerializer(ModelSerializer):
+
+    todos = TodoSerializer(many=True)
+
     class Meta:
         model = Project
         fields = '__all__'

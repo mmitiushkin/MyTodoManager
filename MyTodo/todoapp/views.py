@@ -1,13 +1,12 @@
 from django.shortcuts import render
 
-# Create your views here.
-from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions
 
 from todoapp.models import Todo, Project
-from todoapp.serializers import TodoSerializer, ProjectSerializer
+from todoapp.serializers import TodoSerializer, ProjectSerializer, TodoCreateSerializer
 
 
 def TodoList(request):
@@ -22,6 +21,16 @@ class TodoViewSet(ModelViewSet):
     serializer_class = TodoSerializer
 
 
+class TodoCreateView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        serializer = TodoCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        return Response(status=201)
+
+
 def ProjectList(request):
     projects = Project.objects.all()
     serializer = ProjectSerializer(projects, many=True)
@@ -32,4 +41,3 @@ class ProjectViewSet(ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-
