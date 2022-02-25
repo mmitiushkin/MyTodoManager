@@ -1,23 +1,44 @@
 import { useParams } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './styles.css';
 import React from 'react'
 import axiosInstance from "../axiosAPI";
 
 
 const ProjectTodos = ({projectList}) => {
+    const [projects, setProjects] = useState(projectList)
+
+    function getProjects(){
+        axiosInstance
+        .get('/projects/')
+        .then(response => {
+            const projects = response.data
+            console.log('projects from func', projects)
+            setProjects(projects)
+        })
+        .catch(error => console.log(error));
+    }
+
+    useEffect(() => {
+        window.localStorage.setItem('projects', projects);
+    }, [projects]);
+
+
+    console.log(projects)
     let { id } = useParams();
     console.log('prList: ', projectList)
     console.log('id: ', id)
-    let currentProjects = projectList.filter((project) => project.id == parseInt(id))
+    let currentProjects = projects.filter((project) => project.id == parseInt(id))
     let todoList = currentProjects[0].todos
-    console.log('asdf: ', todoList)
+    console.log('todoList: ', todoList)
 
     const [text, setText] = useState('')
     const [todos] = useState(todoList)
     console.log('txt: ', text)
 
-
+    const deleteItem = () => {
+        console.log(123)
+    }
 
 
     const handleChange = (e) => {
@@ -32,7 +53,6 @@ const ProjectTodos = ({projectList}) => {
     const handleSubmit = (e) => {
         e.preventDefault()
         console.log(text)
-        console.log(currentProjects[0].id)
 
         axiosInstance
         .post('/todo-create/', {'text': text, 'project': currentProjects[0].id})
@@ -40,9 +60,10 @@ const ProjectTodos = ({projectList}) => {
             const todos = response.data
             console.log(todos)
             console.log('done')
+            getProjects()
+            console.log('after sub', projects)
         })
         .catch(error => console.log(error));
-
     }
 
     return (
@@ -72,6 +93,9 @@ const ProjectTodos = ({projectList}) => {
                                 <div className="task-wrapper flex-wrapper-two">
                                     <div style={{flex:7}}>
                                         <span class="mySpan">{task.text}</span>
+                                    </div>
+                                    <div style={{flex:1}}>
+                                        <button onClick={() => deleteItem(task)} className="green">-</button>
                                     </div>
                                 </div>
                             )

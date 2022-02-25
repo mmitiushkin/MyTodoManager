@@ -104,7 +104,7 @@ class  App  extends React.Component {
     }
 
 
-    componentDidMount() {
+    componentWillMount() {
         this.get_data()
     }
 
