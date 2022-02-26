@@ -1,28 +1,23 @@
+from django.http import Http404
 from django.shortcuts import render
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import permissions
+from rest_framework import permissions, status
 
 from todoapp.models import Todo, Project
-from todoapp.serializers import TodoSerializer, ProjectSerializer, TodoCreateSerializer
-
-
-def TodoList(request):
-    todos = Todo.objects.all()
-    serializer = TodoSerializer(todos, many=True)
-    return Response(serializer.data)
+from todoapp.serializers import TodoSerializer, ProjectSerializer, TodoCreateSerializer, ProjectCreateSerializer
 
 
 class TodoViewSet(ModelViewSet):
-    permission_classes = (permissions.AllowAny,)
+
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer
 
 
 class TodoCreateView(APIView):
-    permission_classes = (permissions.AllowAny,)
+
 
     def post(self, request):
         serializer = TodoCreateSerializer(data=request.data)
@@ -31,13 +26,32 @@ class TodoCreateView(APIView):
         return Response(status=201)
 
 
-def ProjectList(request):
-    projects = Project.objects.all()
-    serializer = ProjectSerializer(projects, many=True)
-    return Response(serializer.data)
+class TodoDeleteView(APIView):
+
+
+    def get_object(self, pk):
+        try:
+            return Todo.objects.get(pk=pk)
+        except Todo.DoesNotExist:
+            raise Http404
+
+    def delete(self, request, pk):
+        todo = self.get_object(pk)
+        todo.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ProjectViewSet(ModelViewSet):
-    permission_classes = (permissions.AllowAny,)
+
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+
+
+class ProjectCreateView(APIView):
+
+
+    def post(self, request):
+        serializer = ProjectCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        return Response(status=201)

@@ -104,7 +104,7 @@ class  App  extends React.Component {
     }
 
 
-    componentWillMount() {
+    componentDidMount() {
         this.get_data()
     }
 
@@ -135,7 +135,7 @@ class  App  extends React.Component {
                             <Route exact path={"/login/"} element={<Login/>}/>
                             <Route exact path={"/signup/"} element={<Signup/>}/>
                             <Route exact path={"/"} element={<Home/>}/>
-                            <Route path="/profile" element={<Profile projects={this.state.projects} user_id={user}/> } />
+                            <Route path="/profile" element={<Profile projectList={this.state.projects} user_id={user}/> } />
                         </Routes>
 
                         <footer id="footer">

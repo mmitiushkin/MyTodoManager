@@ -55,6 +55,12 @@ body {
 	-webkit-text-size-adjust: none;
 }
 
+.mytext {
+    font-weight: 300;
+    font-size: 28px;
+    margin: 13px;
+}
+
 mark {
 	background-color: transparent;
 	color: inherit;

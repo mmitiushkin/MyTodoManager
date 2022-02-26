@@ -6,6 +6,7 @@ import axiosInstance from "../axiosAPI";
 
 
 const ProjectTodos = ({projectList}) => {
+
     const [projects, setProjects] = useState(projectList)
 
     function getProjects(){
@@ -13,55 +14,49 @@ const ProjectTodos = ({projectList}) => {
         .get('/projects/')
         .then(response => {
             const projects = response.data
-            console.log('projects from func', projects)
             setProjects(projects)
         })
         .catch(error => console.log(error));
     }
 
-    useEffect(() => {
-        window.localStorage.setItem('projects', projects);
-    }, [projects]);
-
-
-    console.log(projects)
     let { id } = useParams();
-    console.log('prList: ', projectList)
-    console.log('id: ', id)
+
     let currentProjects = projects.filter((project) => project.id == parseInt(id))
     let todoList = currentProjects[0].todos
-    console.log('todoList: ', todoList)
 
     const [text, setText] = useState('')
-    const [todos] = useState(todoList)
-    console.log('txt: ', text)
 
-    const deleteItem = () => {
-        console.log(123)
+    useEffect(() => {
+        getProjects()
+    }, []);
+
+    const deleteTodo = (pk) => {
+        axiosInstance
+        .delete(`/todo-delete/${pk}`)
+        .then(response => {
+            const todos = response.data
+            getProjects()
+            setText('')
+        })
+        .catch(error => console.log(error));
     }
 
 
     const handleChange = (e) => {
         var name = e.target.name
         var value = e.target.value
-        console.log('Name:', name)
-        console.log('Value:', value)
         setText(value)
-        console.log('txt: ', text)
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log(text)
 
         axiosInstance
         .post('/todo-create/', {'text': text, 'project': currentProjects[0].id})
         .then(response => {
             const todos = response.data
-            console.log(todos)
-            console.log('done')
             getProjects()
-            console.log('after sub', projects)
+            setText('')
         })
         .catch(error => console.log(error));
     }
@@ -69,7 +64,7 @@ const ProjectTodos = ({projectList}) => {
     return (
         <div>
         <div>
-            <p class="projectName">Project</p>
+            <p class="projectName">{currentProjects[0].name}</p>
             <div className="container">
                 <div id="task-container">
 
@@ -95,11 +90,14 @@ const ProjectTodos = ({projectList}) => {
                                         <span class="mySpan">{task.text}</span>
                                     </div>
                                     <div style={{flex:1}}>
-                                        <button onClick={() => deleteItem(task)} className="green">-</button>
+                                        <button onClick={() => deleteTodo(task.id)} className="green">-</button>
                                     </div>
                                 </div>
                             )
                         })}
+                    </div>
+                    <div>
+
                     </div>
 
                 </div>

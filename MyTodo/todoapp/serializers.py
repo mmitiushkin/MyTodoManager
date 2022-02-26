@@ -21,3 +21,9 @@ class ProjectSerializer(ModelSerializer):
     class Meta:
         model = Project
         fields = '__all__'
+
+
+class ProjectCreateSerializer(ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ('id', 'name', 'user')
