@@ -13,7 +13,7 @@ const ProjectTodos = ({projectList}) => {
         axiosInstance
         .get('/projects/')
         .then(response => {
-            const projects = respponse.data
+            const projects = response.data
             setProjects(projects)
         })
         .catch(error => console.log(error));

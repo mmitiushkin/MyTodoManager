@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt import views as jwt_views
 
@@ -22,4 +23,5 @@ urlpatterns = [
     path('api/todo-create/', TodoCreateView.as_view(), name="todo-create"),
     path('api/todo-delete/<int:pk>', TodoDeleteView.as_view(), name="todo-delete"),
     path('api/project-create/', ProjectCreateView.as_view(), name="project-create"),
+    path('', TemplateView.as_view(template_name='index.html')),
 ]
